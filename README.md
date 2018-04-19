@@ -152,8 +152,8 @@ Angular 提供了各种各样的数据绑定，本章将逐一讨论。先从高
   <tr>
       <td>从视图到数据源的单向绑定</td>
       <td>
-      [(target)]="expression"<br>
-      bindon-target="expression"
+      (target)="statement" <br>
+      on-target="statement"
       </td>
       <td>
      事件
@@ -162,8 +162,8 @@ Angular 提供了各种各样的数据绑定，本章将逐一讨论。先从高
     <tr>
         <td>双向</td>
         <td>
-        (target)="statement"<br>
-        on-target="statement"
+        [(target)]="expression"<br>
+        bindon-target="expression"
         </td>
         <td>
        双向
