@@ -100,3 +100,55 @@ Angular 会在每个变更检测周期后执行模板表达式。 它们可能�
 和表达式中一样，语句只能引用语句上下文中 —— 通常是`正在绑定事件的那个组件实例`。 
 
 典型的语句上下文就是当前组件的实例。 (click)="deleteHero()" 中的 deleteHero 就是这个数据绑定`组件上的一个方法`。
+
+`src/app/app.component.html`
+```angular2html
+<button (click)="deleteHero()">Delete hero</button>
+```
+语句上下文可以`引用`(注：所谓引用一般说来是充当方法参数)模板自身上下文中的属性（注：$event应该是一个内置变量，模板输入变量和模板引用变量类似于模板内声明的变量）。在下面的例子中，就把模板的$event对象(稍后研究)、模板输入变量(let hero)和模板引用变量(#heroForm)传给了组件中的一个事件处理器方法。 
+
+`src/app/app.component.html`
+```angular2html
+<button (click)="onSave($event)">Save</button>
+<button *ngFor="let hero of heroes" (click)="deleteHero(hero)">{{hero.name}}</button>
+<form #heroForm (ngSubmit)="onSubmit(heroForm)"> ... </form>
+```
+模板上下文中的变量名的优先级高于组件上下文中的变量名。在上面的 deleteHero(hero) 中，hero 是一个模板输入变量，而不是组件中的 hero 属性。 
+
+模板语句不能引用全局命名空间的任何东西。比如不能引用 window 或 document，也不能调用 console.log 或 Math.max。
+###语句指南
+和表达式一样，避免写复杂的模板语句。 常规是函数调用或者属性赋值。
+
+现在，对模板表达式和语句有了一点感觉了吧。除插值表达式外，还有各种各样的数据绑定语法，是学习它们是时候了。
+
+## 绑定语法
+数据绑定是一种机制，用来协调用户所见和应用数据。虽然你能往HTML推送值或者从HTML拉取值，但如果把这些琐事交给数据绑定框架处理，应用会更容易编写、阅读和维护。只要简单地在绑定源和目标HTML元素之间声明绑定，框架就会完成这项工作。 
+
+(注：理解上面这段话是很有意义的，绑定到底干什么用的，绑定的目标和数据源具体表现是什么，概念都应该在研究中逐渐清晰) 
+
+Angular 提供了各种各样的数据绑定，本章将逐一讨论。先从高层视角来看看Angular数据绑定及其语法。
+绑定的类型可以根据数据流的方向分成三类： 从数据源到视图、从视图到数据源以及双向的从视图到数据源再到视图。
+
+
+<table>
+<tr>
+<th>数据方向  </th><th> 语法 </th><th> 绑定类型 </th>
+</tr> 
+<tr>
+<td>单向 从数据源到视图</td>
+<td>
+{{expression}} <br>
+[target]="expression" <br>
+bind-target="expression" <br>
+</td>
+<td>
+插值表达式<br>
+    属性<br>
+    Attribute<br>
+    CSS 类<br>
+    样式</td><br>
+    </tr>
+</table>
+  
+
+
