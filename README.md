@@ -131,22 +131,33 @@ Angular 提供了各种各样的数据绑定，本章将逐一讨论。先从高
 
 
 <table>
-<tr>
-<th>数据方向  </th><th> 语法 </th><th> 绑定类型 </th>
-</tr> 
-<tr>
-<td>单向 从数据源到视图</td>
-<td>
-{{expression}} <br>
-[target]="expression" <br>
-bind-target="expression" <br>
-</td>
-<td>
-插值表达式<br>
-    属性<br>
-    Attribute<br>
-    CSS 类<br>
-    样式</td><br>
+  <tr>
+  <th>数据方向  </th><th> 语法 </th><th> 绑定类型 </th>
+  </tr> 
+  <tr>
+    <td>单向 从数据源到视图</td>
+    <td>
+    {{expression}} <br>
+    [target]="expression" <br>
+    bind-target="expression" <br>
+    </td>
+    <td>
+    插值表达式<br>
+        属性<br>
+        Attribute<br>
+        CSS 类<br>
+        样式
+      </td>
+  </tr>
+  <tr>
+      <td>从视图到数据源的单向绑定</td>
+      <td>
+      (target)="statement"<br>
+      on-target="statement"
+      </td>
+      <td>
+     事件
+        </td>
     </tr>
 </table>
   
