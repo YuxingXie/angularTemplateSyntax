@@ -1136,3 +1136,19 @@ trackByHeroes(index: number, hero: Hero): number { return hero.id; }
 * 如果没有 trackBy，这些按钮都会触发完全的 DOM 元素替换。
 * 有了 trackBy，则只有修改了 id 的按钮才会触发元素替换。
 ![](https://github.com/YuxingXie/angularTemplateSyntax/raw/master/ng-for-track-by-anim.gif) 
+
+### NgSwitch 指令 
+NgSwitch 指令类似于 JavaScript 的 switch 语句。 它可以从多个可能的元素中根据switch 条件来显示某一个。 Angular 只会把选中的元素放进 DOM 中。
+
+NgSwitch 实际上包括三个相互协作的指令：NgSwitch、NgSwitchCase 和 NgSwitchDefault，例子如下：
+
+`src/app/app.component.html`
+```html
+<div [ngSwitch]="currentHero.emotion">
+  <app-happy-hero    *ngSwitchCase="'happy'"    [hero]="currentHero"></app-happy-hero>
+  <app-sad-hero      *ngSwitchCase="'sad'"      [hero]="currentHero"></app-sad-hero>
+  <app-confused-hero *ngSwitchCase="'confused'" [hero]="currentHero"></app-confused-hero>
+  <app-unknown-hero  *ngSwitchDefault           [hero]="currentHero"></app-unknown-hero>
+</div>
+```
+![](https://github.com/YuxingXie/angularTemplateSyntax/raw/master/switch-anim.gif) 
