@@ -673,3 +673,14 @@ CSS 类绑定绑定的语法与属性绑定类似。 但方括号中的部分不
 假设 HeroDetailComponent 用于显示英雄的信息，并响应用户的动作。 虽然 HeroDetailComponent 包含删除按钮，但它自己并不知道该如何删除这个英雄。 最好的做法是触发事件来报告“删除用户”的请求。
 
 下面的代码节选自 HeroDetailComponent：
+`src/app/hero-detail.component.ts (template)`
+```html
+template: `
+<div>
+  <img src="{{heroImageUrl}}">
+  <span [style.text-decoration]="lineThrough">
+    {{prefix}} {{hero?.name}}
+  </span>
+  <button (click)="delete()">Delete</button>
+</div>`
+```
