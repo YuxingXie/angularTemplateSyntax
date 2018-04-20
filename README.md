@@ -214,7 +214,8 @@ Angular 提供了各种各样的数据绑定，本章将逐一讨论。先从高
 过会儿再认识那个怪异的方括号记法。直觉告诉你，你正在绑定按钮的disabled attribute。并把它设置为组件的isUnchanged属性的当前值。
 
 但你的`直觉是错的`！日常的 HTML 思维模式在误导着你。实际上，`一旦开始数据绑定，就不再跟HTML attribute打交道了`。这里不是设置attribute，而是设置DOM元素、组件和指令的property。
->###HTML attribute 与 DOM property 的对比
+###HTML attribute 与 DOM property 的对比
+
 >要想理解 Angular 绑定如何工作，重点是搞清 HTML attribute 和 DOM property 之间的区别。
 >
 >attribute 是由 HTML 定义的。property 是由 DOM (Document Object Model) 定义的。
@@ -267,13 +268,12 @@ Angular 提供了各种各样的数据绑定，本章将逐一讨论。先从高
     <td>元素的 property<br>
         组件的 property<br>
         指令的 property</td>
-    <td>
-      `src/app/app.component.html`
-    ```html
+<td>
+      src/app/app.component.html<br>
+    
       <img [src]="heroImageUrl">
       <app-hero-detail [hero]="currentHero"></app-hero-detail>
       <div [ngClass]="{'special': isSpecial}"></div>
-      ```
-    </td>
+</td>
     </tr>
 </table>
