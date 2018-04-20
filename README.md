@@ -540,12 +540,6 @@ attribute 绑定的语法与属性绑定类似。 但方括号中的部分不是
 这里是表格渲染出来的样子：
 
 <table border=1>
-  <!--  expression calculates colspan=2 -->
   <tr><td colspan="2">One-Two</td></tr>
-
-  <!-- ERROR: There is no `colspan` property to set!
-    <tr><td colspan="{{1 + 1}}">Three-Four</td></tr>
-  -->
-
   <tr><td>Five</td><td>Six</td></tr>
 </table>
