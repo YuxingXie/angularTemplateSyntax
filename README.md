@@ -961,4 +961,26 @@ ngModel 指令通过自己的输入属性 ngModel 和输出属性 ngModelChange 
 > 
 >你自己写的 Angular 组件不需要值访问器，因为你可以让值和事件的属性名适应 Angular 基本的双向绑定语法，而不使用 NgModel。 前面看过的 sizer就是使用这种技巧的例子。
 
+使用独立的 ngModel 绑定优于绑定到该元素的原生属性，你可以做得更好。
 
+你不用被迫两次引用这个数据属性，Angular 可以捕获该元素的数据属性，并且通过一个简单的声明来设置它，这样它就可以使用 [(ngModel)] 语法了。
+
+`src/app/app.component.html`
+```html
+<input [(ngModel)]="currentHero.name">
+```
+[(ngModel)] 就是你需要的一切吗？有没有什么理由回退到它的展开形式？
+
+[(ngModel)] 语法只能设置数据绑定属性。 如果要做更多或者做点不一样的事，也可以写它的展开形式。
+
+下面这个生造的例子强制输入框的内容变成大写：
+
+`src/app/app.component.html`
+```html
+<input
+  [ngModel]="currentHero.name"
+  (ngModelChange)="setUppercaseName($event)">
+```
+
+这里是所有这些变体的动画，包括这个大写转换的版本：
+![](https://github.com/YuxingXie/angularTemplateSyntax/raw/master/ng-model-anim.gif) 
