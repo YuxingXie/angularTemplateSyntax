@@ -941,4 +941,24 @@ export class AppModule { }
 ```html
 <input [value]="currentHero.name"
        (input)="currentHero.name=$event.target.value" >
-       ```
+```
+
+那样显得很笨重，谁会记得该设置哪个元素属性以及当用户修改时触发哪个事件？你该如何提取输入框中的文本并且更新数据属性？谁会希望每次都去查资料来确定这些？
+
+ngModel 指令通过自己的输入属性 ngModel 和输出属性 ngModelChange 隐藏了那些细节。
+
+`src/app/app.component.html`
+```html
+<input
+  [ngModel]="currentHero.name"
+  (ngModelChange)="currentHero.name=$event">
+```
+
+>ngModel 输入属性会设置该元素的值，并通过 ngModelChange 的输出属性来监听元素值的变化。
+>各种元素都有很多特有的处理细节，因此 NgModel 指令只支持实现了ControlValueAccessor的元素， 它们能让元素适配本协议。 &lt;input> 输入框正是其中之一。 Angular 为所有的基础 HTML 表单都提供了值访问器（Value accessor），表单一章展示了如何绑定它们。
+> 
+>你不能把 [(ngModel)] 用到非表单类的原生元素或第三方自定义组件上，除非写一个合适的值访问器，这种技巧超出了本章的范围。
+> 
+>你自己写的 Angular 组件不需要值访问器，因为你可以让值和事件的属性名适应 Angular 基本的双向绑定语法，而不使用 NgModel。 前面看过的 sizer就是使用这种技巧的例子。
+
+
