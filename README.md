@@ -912,3 +912,33 @@ setCurrentStyles() {
 ```html
 <input [(ngModel)]="currentHero.name">
 ```
+#### 使用 ngModel 时需要 FormsModule 
+在使用 ngModel 指令进行双向数据绑定之前，你必须导入 FormsModule 并把它添加到 Angular 模块的 imports 列表中。 要了解 FormsModule 和 ngModel 的更多知识，参见表单一章。
+
+导入 FormsModule 并让 [(ngModel)] 可用的代码如下： 
+
+`src/app/app.module.ts (FormsModule import)`
+```typescript
+import { NgModule } from '@angular/core';
+import { BrowserModule }  from '@angular/platform-browser';
+import { FormsModule } from '@angular/forms'; // <--- JavaScript import from Angular
+
+/* Other imports */
+
+@NgModule({
+  imports: [
+    BrowserModule,
+    FormsModule  // <--- import into the NgModule
+  ],
+  /* Other module metadata */
+})
+export class AppModule { }
+```
+#### [(ngModel)]内幕 
+回头看看 name 绑定，注意，你可以通过分别绑定到 &LT;input> 元素的 value 属性和 input 事件来达到同样的效果。
+
+`src/app/app.component.html`
+```html
+<input [value]="currentHero.name"
+       (input)="currentHero.name=$event.target.value" >
+       ```
