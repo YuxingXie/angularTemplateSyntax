@@ -1091,5 +1091,48 @@ hero 前的 let 关键字创建了一个名叫 hero 的模板输入变量。 ngF
 ```html
 <div *ngFor="let hero of heroes">{{hero.name}}</div>
 <app-hero-detail *ngFor="let hero of heroes" [hero]="hero"></app-hero-detail>
-要了解更多模板输入变量的知识，参见结构型指令一章。
 ```
+要了解更多模板输入变量的知识，参见结构型指令一章。
+#### 带索引的 *ngFor 
+NgFor 指令上下文中的 index 属性返回一个从零开始的索引，表示当前条目在迭代中的顺序。 你可以通过模板输入变量捕获这个 index 值，并把它用在模板中。
+
+下面这个例子把 index 捕获到了 i 变量中，并且把它显示在英雄名字的前面。
+
+(注：有时候需要索引的奇偶数做些样式或逻辑判断，angularjs似乎一直没解决的问题，在angular中解决了)
+
+`src/app/app.component.html`
+```html
+<div *ngFor="let hero of heroes; let i=index">{{i + 1}} - {{hero.name}}</div>
+```
+>要学习更多的类似 index 的值，例如 last、even 和 odd，请参阅 NgFor API 参考。 
+
+#### 带 trackBy 的 *ngFor
+ngFor 指令有时候会性能较差，特别是在大型列表中。 对一个条目的一丁点改动、移除或添加，都会导致级联的 DOM 操作。
+
+例如，重新从服务器查询可以刷新包括所有新英雄在内的英雄列表。
+
+他们中的绝大多数（如果不是所有的话）都是以前显示过的英雄。你知道这一点，是因为每个英雄的 id 没有变化。 但在 Angular 看来，它只是一个由新的对象引用构成的新列表， 它没有选择，只能清理旧列表、舍弃那些 DOM 元素，并且用新的 DOM 元素来重建一个新列表。
+
+如果给它指定一个 trackBy，Angular 就可以避免这种折腾。 往组件中添加一个方法，它会返回 NgFor应该追踪的值。 在这里，这个值就是英雄的 id。
+
+(注：说句后端java程序员才懂的行话，trackBy类似于jpa的持久化上下文)
+
+`src/app/app.component.ts`
+```html
+trackByHeroes(index: number, hero: Hero): number { return hero.id; }
+```
+在微语法中，把 trackBy 设置为该方法。
+
+`src/app/app.component.html`
+```html
+<div *ngFor="let hero of heroes; trackBy: trackByHeroes">
+  ({{hero.id}}) {{hero.name}}
+</div>
+```
+(注：个人认为这个特性是提高前端性能的重要手段)
+
+这里展示了 trackBy 的效果。 "Reset heroes"会创建一个具有相同 hero.id 的新英雄。 "Change ids"则会创建一个具有新 hero.id 的新英雄。
+
+* 如果没有 trackBy，这些按钮都会触发完全的 DOM 元素替换。
+* 有了 trackBy，则只有修改了 id 的按钮才会触发元素替换。
+![](https://github.com/YuxingXie/angularTemplateSyntax/raw/master/ng-for-track-by-anim.gif) 
