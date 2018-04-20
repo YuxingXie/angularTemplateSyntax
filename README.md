@@ -255,3 +255,25 @@ Angular 提供了各种各样的数据绑定，本章将逐一讨论。先从高
 
 ###绑定目标
 `数据绑定的目标`是 DOM 中的某些东西。这个目标可能（元素 | 组件| 指令的property、（元素 | 组件 | 指令的）事件，或(极少数情况下) attribute 名。 下面是的汇总表：
+
+<table>
+  <tr>
+  <th>绑定类型</th>
+  <th>目标</th>
+  <th>范例</th>
+  </tr>
+  <tr>
+    <td>属性(Property)</td>
+    <td>元素的 property<br>
+        组件的 property<br>
+        指令的 property</td>
+    <td>
+      `src/app/app.component.html`
+    ```html
+      <img [src]="heroImageUrl">
+      <app-hero-detail [hero]="currentHero"></app-hero-detail>
+      <div [ngClass]="{'special': isSpecial}"></div>
+      ```
+    </td>
+    </tr>
+</table>
