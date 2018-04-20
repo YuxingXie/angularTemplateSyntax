@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import {Hero} from './Hero';
 
 @Component({
   selector: 'app-root',
@@ -7,4 +8,8 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'app';
+  public currentHero = new Hero(1, 'JJJ');
+  deleteHero(hero: Hero) {
+    console.log(hero.name);
+  }
 }

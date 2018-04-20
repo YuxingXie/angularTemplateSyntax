@@ -694,7 +694,7 @@ delete() {
   this.deleteRequest.emit(this.hero);
 }
 ```
-(注：看起来是事件冒泡的模式，既然如此，就一定要存在一个能截获此冒泡事件的组件)
+(注：delete方法看起来是要从英雄列表数组中删除该项，然而HeroDetailComponent并不持有该数组，所以需要它的父组件去真正执行从数组删除数据项这件事，类似于给父组件发个通知吧)
 
 组件定义了 deleteRequest 属性，它是 EventEmitter 实例。 当用户点击删除时，组件会调用 delete() 方法，让 EventEmitter 发出一个 Hero 对象。
 
@@ -704,3 +704,12 @@ delete() {
 ```html
 <app-hero-detail (deleteRequest)="deleteHero($event)" [hero]="currentHero"></app-hero-detail>
 ```
+当deleteRequest事件触发时，Angular调用父组件的deleteHero方法，在$event变量中传入要删除的英雄（来自HeroDetail）。
+
+>(注：app-hero-detail组件绑定了自定义的deleteRequest属性，初略的理解是，这个属性表明点击该组件会传播一个Hero对象到父组件，
+父组件的deleteHero方法通过参数$event接受这个Hero对象，具体如何取得这个值，通过试验，代码如下：)
+    
+    //组件中(deleteRequest)="deleteHero($event)"绑定方法deleteHero($event)的实现如下：
+    deleteHero(hero: Hero) {
+        console.log(hero.name);
+    }
