@@ -1012,3 +1012,84 @@ ngModel 指令通过自己的输入属性 ngModel 和输出属性 ngModelChange 
 >
 >别忘了 ngIf 前面的星号(*)。
 >
+
+当 isActive 表达式返回真值时，NgIf 把 HeroDetailComponent 添加到 DOM 中；为假时，NgIf 会从 DOM 中移除 HeroDetailComponent，并销毁该组件及其所有子组件。
+
+#### 这和显示/隐藏不是一回事 
+你也可以通过类绑定或样式绑定来显示或隐藏一个元素。
+
+`src/app/app.component.html`
+```html
+<!-- isSpecial is true -->
+<div [class.hidden]="!isSpecial">Show with class</div>
+<div [class.hidden]="isSpecial">Hide with class</div>
+
+<!-- HeroDetail is in the DOM but hidden -->
+<app-hero-detail [class.hidden]="isSpecial"></app-hero-detail>
+
+<div [style.display]="isSpecial ? 'block' : 'none'">Show with style</div>
+<div [style.display]="isSpecial ? 'none'  : 'block'">Hide with style</div>
+```
+但隐藏子树和用 NgIf 排除子树是截然不同的。
+
+当隐藏子树时，它仍然留在 DOM 中。 子树中的组件及其状态仍然保留着。 即使对于不可见属性，Angular 也会继续检查变更。 子树可能占用相当可观的内存和运算资源。
+
+当 NgIf 为 false 时，Angular 从 DOM 中物理地移除了这个元素子树。 它销毁了子树中的组件及其状态，也潜在释放了可观的资源，最终让用户体验到更好的性能。
+
+显示/隐藏的技术对于只有少量子元素的元素是很好用的，但要当心别试图隐藏大型组件树。相比之下，NgIf 则是个更安全的选择。
+
+#### 防范空指针错误 
+
+ngIf 指令通常会用来防范空指针错误。 而显示/隐藏的方式是无法防范的，当一个表达式尝试访问空值的属性时，Angular 就会抛出一个异常。
+
+这里我们用 NgIf 来保护了两个 <div> 防范空指针错误。 currentHero 的名字只有当存在 currentHero 时才会显示出来。 而 nullHero 永远不会显示。
+
+`src/app/app.component.html`
+```html
+<div *ngIf="currentHero">Hello, {{currentHero.name}}</div>
+<div *ngIf="nullHero">Hello, {{nullHero.name}}</div>
+```
+>
+>参见稍后的安全导航操作符部分。
+>
+### NgForOf 
+
+NgFor 是一个重复器指令 —— 自定义数据显示的一种方式。 你的目标是展示一个由多个条目组成的列表。首先定义了一个 HTML 块，它规定了单个条目应该如何显示。 再告诉 Angular 把这个块当做模板，渲染列表中的每个条目。
+
+下例中，NgFor 应用在一个简单的 <div> 上：
+
+`src/app/app.component.html`
+```html
+<div *ngFor="let hero of heroes">{{hero.name}}</div>
+
+```
+也可以把 NgFor 应用在一个组件元素上，就下例这样：
+
+`src/app/app.component.html`
+```html
+<app-hero-detail *ngFor="let hero of heroes" [hero]="hero"></app-hero-detail>
+
+```
+>不要忘了 ngFor 前面的星号 (*)。
+
+赋值给 *ngFor 的文本是用于指导重复器如何工作的指令(注：instruction非directive)。
+#### NgFor 微语法 
+赋值给 *ngFor 的字符串不是模板表达式。 它是一个微语法 —— 由 Angular 自己解释的小型语言。在这个例子中，字符串 "let hero of heroes" 的含义是：
+
+<b>取出 heroes 数组中的每个英雄，把它存入局部变量 hero 中，并在每次迭代时对模板 HTML 可用</b>
+
+Angular 把这个指令翻译成了一个 <ng-template> 包裹的宿主元素，然后使用这个模板重复创建出一组新元素，并且绑定到列表中的每一个 hero。
+
+要了解微语法的更多知识，参见结构型指令一章。
+
+### 模板输入变量 
+hero 前的 let 关键字创建了一个名叫 hero 的模板输入变量。 ngFor 指令在由父组件的 heroes 属性返回的 heroes 数组上迭代，每次迭代都从数组中把当前元素赋值给 hero 变量。
+
+你可以在 ngFor 的宿主元素（及其子元素）中引用模板输入变量 hero，从而访问该英雄的属性。 这里它首先在一个插值表达式中被引用到，然后通过一个绑定把它传给了 <hero-detail> 组件的 hero 属性。
+
+`src/app/app.component.html`
+```html
+<div *ngFor="let hero of heroes">{{hero.name}}</div>
+<app-hero-detail *ngFor="let hero of heroes" [hero]="hero"></app-hero-detail>
+要了解更多模板输入变量的知识，参见结构型指令一章。
+```
