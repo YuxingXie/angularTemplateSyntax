@@ -711,5 +711,5 @@ delete() {
     
     //组件中(deleteRequest)="deleteHero($event)"绑定方法deleteHero($event)的实现如下：
     deleteHero(hero: Hero) {
-        console.log(hero.name);
+        console.log(hero.name);//it works，表明$event就是子组件传递过来的那个Hero对象
     }
