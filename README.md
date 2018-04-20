@@ -328,3 +328,4 @@ Angular 提供了各种各样的数据绑定，本章将逐一讨论。先从高
 </td>
 </tr>
 </table>
+(注：class,attr,style这3个绑定形式上有些类似)
