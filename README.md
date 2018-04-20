@@ -708,8 +708,66 @@ delete() {
 
 >(注：app-hero-detail组件绑定了自定义的deleteRequest属性，初略的理解是，这个属性表明点击该组件会传播一个Hero对象到父组件，
 父组件的deleteHero方法通过参数$event接受这个Hero对象，具体如何取得这个值，通过试验，代码如下：)
-    
+
+`app.component.ts` 
+```javascript
     //组件中(deleteRequest)="deleteHero($event)"绑定方法deleteHero($event)的实现如下：
     deleteHero(hero: Hero) {
         console.log(hero.name);//it works，表明$event就是子组件传递过来的那个Hero对象
     }
+```
+`hero-detail.component.ts`
+```javascript
+  @Output() deleteRequest: EventEmitter<Hero> = new EventEmitter<Hero>();
+  @Input() hero: Hero;
+  delete() {
+    console.log('HeroDetailComponent.delete method invoke');
+    this.deleteRequest.emit(this.hero);
+  }
+```
+### 模板语句有副作用 
+
+deleteHero 方法有副作用：它删除了一个英雄。 模板语句的副作用不仅没问题，反而正是所期望的。
+
+删除这个英雄会更新模型，还可能触发其它修改，包括向远端服务器的查询和保存。这些变更通过系统进行扩散，并最终显示到当前以及其它视图中。
+
+## 双向数据绑定 ( [(...)] ) 
+
+你经常需要显示数据属性，并在用户作出更改时更新该属性。
+
+在元素层面上，既要设置元素属性，又要监听元素事件变化。
+
+Angular 为此提供一种特殊的双向数据绑定语法：[(x)]。 [(x)] 语法结合了属性绑定的方括号 [x] 和事件绑定的圆括号 (x)。
+
+    [( )] = 盒子里的香蕉
+     想象盒子里的香蕉来记住方括号套圆括号。 
+
+当一个元素拥有可以设置的属性 x 和对应的事件 xChange 时，解释 [(x)] 语法就容易多了。 下面的 SizerComponent 符合这个模式。它有 size 属性和配套的 sizeChange 事件：
+
+`src/app/sizer.component.ts`
+
+```typescript
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+
+@Component({
+  selector: 'app-sizer',
+  template: `
+  <div>
+    <button (click)="dec()" title="smaller">-</button>
+    <button (click)="inc()" title="bigger">+</button>
+    <label [style.font-size.px]="size">FontSize: {{size}}px</label>
+  </div>`
+})
+export class SizerComponent {
+  @Input()  size: number | string;
+  @Output() sizeChange = new EventEmitter<number>();
+
+  dec() { this.resize(-1); }
+  inc() { this.resize(+1); }
+
+  resize(delta: number) {
+    this.size = Math.min(40, Math.max(8, +this.size + delta));
+    this.sizeChange.emit(this.size);
+  }
+}
+```
