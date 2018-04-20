@@ -291,4 +291,40 @@ Angular 提供了各种各样的数据绑定，本章将逐一讨论。先从高
       <div (myClick)="clicked=$event" clickable>click me</div>
 </td>
 </tr>
+<tr>
+    <td>双向</td>
+    <td>事件与 property</td>
+<td>
+      src/app/app.component.html
+      
+      <input [(ngModel)]="name">
+</td>
+</tr>
+<tr>
+    <td>Attribute</td>
+    <td>attribute（例外情况）</td>
+<td>
+      src/app/app.component.html
+      
+      <button [attr.aria-label]="help">help</button>
+</td>
+</tr>
+<tr>
+    <td>CSS 类</td>
+    <td>class property</td>
+<td>
+      src/app/app.component.html
+      
+      <div [class.special]="isSpecial">Special</div>
+</td>
+</tr>
+<tr>
+    <td>样式</td>
+    <td>style property</td>
+<td>
+      src/app/app.component.html
+      
+      <button [style.color]="isSpecial ? 'red' : 'green'">
+</td>
+</tr>
 </table>
