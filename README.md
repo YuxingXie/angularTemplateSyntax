@@ -624,6 +624,52 @@ CSS 类绑定绑定的语法与属性绑定类似。 但方括号中的部分不
 
 圆括号中的名称 —— 比如 (click) —— 标记出目标事件。在下面例子中，目标是按钮的 click 事件。
 
-src/app/app.component.html
-content_copy
+`src/app/app.component.html`
+```html
 <button (click)="onSave()">Save</button>
+
+```
+有些人更喜欢带 on- 前缀的备选形式，称之为规范形式：
+
+`src/app/app.component.html`
+```html
+<button on-click="onSave()">On Save</button>
+
+```
+元素事件可能是更常见的目标，但 Angular 会先看这个名字是否能匹配上已知指令的事件属性，就像下面这个例子：
+
+`src/app/app.component.html`
+```html
+<!-- `myClick` is an event on the custom `ClickDirective` -->
+<div (myClick)="clickMessage=$event" clickable>click with myClick</div>
+```
+
+>更多关于该 myClick 指令的解释，见给输入/输出属性起别名。
+
+如果这个名字没能匹配到元素事件或已知指令的输出属性，Angular 就会报“未知指令”错误。
+
+### $event 和事件处理语句 
+在事件绑定中，Angular 会为目标事件设置事件处理器。
+
+当事件发生时，这个处理器会执行模板语句。典型的模板语句通常涉及到响应事件执行动作的接收器，例如从HTML控件中取得值，并存入模型。
+
+绑定会通过名叫$event的事件对象传递关于此事件的信息（包括数据值）。
+
+事件对象的形态取决于目标事件。如果目标事件是原生DOM元素事件，$event就是DOM事件对象，它有像target和target.value这样的属性。
+
+考虑这个范例：
+`src/app/app.component.html`
+```html
+<input [value]="currentHero.name"
+       (input)="currentHero.name=$event.target.value" >
+```
+要更新 firstName 属性，就要通过路径 $event.target.value 来获取更改后的值。
+
+如果事件属于指令（回想一下，组件是指令的一种），那么 $event 具体是什么由指令决定。
+
+### 使用 EventEmitter 实现自定义事件 
+通常，指令使用 Angular EventEmitter 来触发自定义事件。指令创建一个 EventEmitter 实例，并且把它作为属性暴露出来。 指令调用 EventEmitter.emit(payload) 来触发事件，可以传入任何东西作为消息载荷。 父指令通过绑定到这个属性来监听事件，并通过 $event 对象来访问载荷。
+
+假设 HeroDetailComponent 用于显示英雄的信息，并响应用户的动作。 虽然 HeroDetailComponent 包含删除按钮，但它自己并不知道该如何删除这个英雄。 最好的做法是触发事件来报告“删除用户”的请求。
+
+下面的代码节选自 HeroDetailComponent：
