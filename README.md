@@ -491,5 +491,5 @@ evilTitle = 'Template <script>alert("evil never sleeps")</script>Syntax';
 
 插值表达式处理script标签与属性绑定有所不同，但是二者都只渲染没有危害的内容。 
 
-![](https://www.angular.cn/generated/images/guide/template-syntax/evil-title.png) 
+![](https://github.com/YuxingXie/angularTemplateSyntax/raw/master/evil-title.png) 
 
