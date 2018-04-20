@@ -4,7 +4,7 @@
 
 # 知识点
 ## 插值表达式
-```angular2html
+```html
     <h3>
       {{title}}
       <img src="{{heroImageUrl}}" style="height:30px">
@@ -16,7 +16,7 @@
 * 插值表达式是一个特殊的语法，Angular 把它转换成了`属性绑定`（将会详细研究）。
 ## 模板表达式(Template expressions)
 * 模板表达式产生一个值。 Angular 执行这个表达式，并把它赋值给绑定目标的属性，这个绑定目标可能是 HTML 元素、组件或指令。
-```angular2html
+```html
 {{1 + 1}} //模板表达式是 1 + 1
 [property]="expression" //属性绑定
 ```
@@ -33,14 +33,14 @@ JavaScript 中那些具有或可能引发副作用的表达式是被禁止的，
 ## 表达式上下文 (Expression context)
 * 典型的表达式上下文就是这个组件实例，它是各种绑定值的来源。 在下面的代码片段中，双花括号中的 title 和引号中的 isUnchanged 所引用的都是 AppComponent 中的属性。<br>  
 `src/app/app.component.html`
-```angular2html
+```html
     {{title}}
     <span [hidden]="isUnchanged">changed</span>
 ```
 * 表达式的上下文可以包括组件之外的对象。 比如模板输入变量 (let hero)和模板引用变量(#heroInput)就是备选的上下文对象之一。<br>
 
 `src/app/app.component.html`
-```angular2html
+```html
 //模板输入变量和模板引用变量概念稍后深入，现在可以理解为声明了2个变量hero和heroInput
 <div *ngFor="let hero of heroes">{{hero.name}}</div>
 <input #heroInput> {{heroInput.value}}
@@ -79,7 +79,7 @@ Angular 会在每个变更检测周期后执行模板表达式。 它们可能�
 模板语句用来响应由绑定目标（如 HTML 元素、组件或指令）触发的事件。 模板语句将在事件绑定一节看到，它出现在 = 号右侧的引号中，就像这样：(event)="statement"。<br>
 
 `src/app/app.component.html`
-```angular2html
+```html
 <button (click)="deleteHero()">Delete hero</button>
 ```
 模板语句有副作用。 这是事件处理的关键。因为你要根据用户的输入更新应用状态。 
@@ -102,13 +102,13 @@ Angular 会在每个变更检测周期后执行模板表达式。 它们可能�
 典型的语句上下文就是当前组件的实例。 (click)="deleteHero()" 中的 deleteHero 就是这个数据绑定`组件上的一个方法`。
 
 `src/app/app.component.html`
-```angular2html
+```html
 <button (click)="deleteHero()">Delete hero</button>
 ```
 语句上下文可以`引用`(注：所谓引用一般说来是充当方法参数)模板自身上下文中的属性（注：$event应该是一个内置变量，模板输入变量和模板引用变量类似于模板内声明的变量）。在下面的例子中，就把模板的$event对象(稍后研究)、模板输入变量(let hero)和模板引用变量(#heroForm)传给了组件中的一个事件处理器方法。 
 
 `src/app/app.component.html`
-```angular2html
+```html
 <button (click)="onSave($event)">Save</button>
 <button *ngFor="let hero of heroes" (click)="deleteHero(hero)">{{hero.name}}</button>
 <form #heroForm (ngSubmit)="onSubmit(heroForm)"> ... </form>
@@ -185,7 +185,7 @@ Angular 提供了各种各样的数据绑定，本章将逐一讨论。先从高
 
 在正常的HTML开发过程中，你使用HTML元素来创建视觉结构，通过把字符串常量设置到元素的attribute来修改那些元素。
 `src/app/app.component.html`
-```angular2html
+```html
 <div class="special">Mental Model</div>
 <img src="assets/images/hero.png">
 <button disabled>Save</button>
@@ -449,3 +449,18 @@ HeroDetail 组件的 hero 属性想要一个 Hero 对象，那就在属性绑定
 <app-hero-detail prefix="You are my" [hero]="currentHero"></app-hero-detail>
 ```
 (注：就像使用普通html属性一样) 
+
+作为对比，[hero] 绑定是组件的 currentHero 属性的活绑定，它会一直随着更新。
+
+### 属性绑定还是插值表达式？ 
+
+你通常得在插值表达式和属性绑定之间做出选择。 下列这几对绑定做的事情完全相同：
+
+`src/app/app.component.html`
+```html
+<p><img src="{{heroImageUrl}}"> is the <i>interpolated</i> image.</p>
+<p><img [src]="heroImageUrl"> is the <i>property bound</i> image.</p>
+
+<p><span>"{{title}}" is the <i>interpolated</i> title.</span></p>
+<p>"<span [innerHTML]="title"></span>" is the <i>property bound</i> title.</p>
+```
