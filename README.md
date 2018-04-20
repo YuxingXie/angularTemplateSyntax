@@ -668,11 +668,12 @@ CSS 类绑定绑定的语法与属性绑定类似。 但方括号中的部分不
 如果事件属于指令（回想一下，组件是指令的一种），那么 $event 具体是什么由指令决定。
 
 ### 使用 EventEmitter 实现自定义事件 
-通常，指令使用 Angular EventEmitter 来触发自定义事件。指令创建一个 EventEmitter 实例，并且把它作为属性暴露出来。 指令调用 EventEmitter.emit(payload) 来触发事件，可以传入任何东西作为消息载荷。 父指令通过绑定到这个属性来监听事件，并通过 $event 对象来访问载荷。
+通常，指令使用 Angular EventEmitter 来触发自定义事件。指令创建一个 EventEmitter 实例(注：泛型实例)，并且把它作为属性暴露出来。 指令调用 EventEmitter.emit(payload) 来触发事件，可以传入任何东西作为消息载荷。 父指令通过绑定到这个属性来监听事件，并通过 $event 对象来访问载荷。
 
-假设 HeroDetailComponent 用于显示英雄的信息，并响应用户的动作。 虽然 HeroDetailComponent 包含删除按钮，但它自己并不知道该如何删除这个英雄。 最好的做法是触发事件来报告“删除用户”的请求。
+假设 HeroDetailComponent 用于显示英雄的信息，并响应用户的动作。 虽然 HeroDetailComponent 包含删除按钮，但它自己并不知道该如何删除这个英雄(注：因为删除的方法定义在父组件中)。 最好的做法是触发事件来报告“删除用户”的请求。
 
 下面的代码节选自 HeroDetailComponent：
+
 `src/app/hero-detail.component.ts (template)`
 ```html
 template: `
@@ -683,4 +684,13 @@ template: `
   </span>
   <button (click)="delete()">Delete</button>
 </div>`
+```
+`src/app/hero-detail.component.ts (deleteRequest)`
+```html
+// This component makes a request but it can't actually delete a hero.
+deleteRequest = new EventEmitter<Hero>();
+
+delete() {
+  this.deleteRequest.emit(this.hero);
+}
 ```
