@@ -543,3 +543,48 @@ attribute 绑定的语法与属性绑定类似。 但方括号中的部分不是
   <tr><td colspan="2">One-Two</td></tr>
   <tr><td>Five</td><td>Six</td></tr>
 </table>
+
+attribute 绑定的主要用例之一是设置 ARIA attribute（译注：ARIA 指可访问性，用于给残障人士访问互联网提供便利）， 就像这个例子中一样：
+
+`src/app/app.component.html`
+```html
+<!-- create and set an aria attribute for assistive technology -->
+<button [attr.aria-label]="actionName">{{actionName}} with Aria</button>
+```
+### CSS 类绑定 
+借助 CSS 类绑定，可以从元素的 class attribute 上添加和移除 CSS 类名。
+
+CSS 类绑定绑定的语法与属性绑定类似。 但方括号中的部分不是元素的属性名，而是由class前缀，一个点 (.)和 CSS 类的名字组成， 其中后两部分是可选的。形如：[class.class-name]。
+
+下列例子示范了如何通过 CSS 类绑定来添加和移除应用的 "special" 类。不用绑定直接设置 attribute 时是这样的：
+
+`src/app/app.component.html`
+```html
+<!-- standard class attribute setting  -->
+<div class="bad curly special">Bad curly special</div>
+```
+可以把它改写为绑定到所需 CSS 类名的绑定；这是一个或者全有或者全无的替换型绑定。 （译注：即当 badCurly 有值时 class 这个 attribute 设置的内容会被完全覆盖）
+
+`src/app/app.component.html`
+```html
+<!-- reset/override all class names with a binding  -->
+<div class="bad curly special"
+     [class]="badCurly">Bad curly</div>
+```
+最后，可以绑定到特定的类名。 当模板表达式的求值结果是真值时，Angular 会添加这个类，反之则移除它。 
+
+`src/app/app.component.html`
+```html
+<!-- toggle the "special" class on/off with a property -->
+<div [class.special]="isSpecial">The class binding is special</div>
+
+<!-- binding to `class.special` trumps the class attribute -->
+<div class="special"
+     [class.special]="!isSpecial">This one is not so special</div>
+```
+>虽然这是切换单一类名的好办法，但人们通常更喜欢使用 NgClass 指令 来同时管理多个类名。
+
+### 样式绑定 
+通过样式绑定，可以设置内联样式。
+
+样式绑定的语法与属性绑定类似。 但方括号中的部分不是元素的属性名，而由style前缀，一个点 (.)和 CSS 样式的属性名组成。 形如：[style.style-property]。 
