@@ -740,9 +740,9 @@ deleteHero 方法有副作用：它删除了一个英雄。 模板语句的副�
 Angular 为此提供一种特殊的双向数据绑定语法：[(x)]。 [(x)] 语法结合了属性绑定的方括号 [x] 和事件绑定的圆括号 (x)。
 
     [( )] = 盒子里的香蕉
-     想象盒子里的香蕉来记住方括号套圆括号。 
+    想象盒子里的香蕉来记住方括号套圆括号。 
 
-当一个元素拥有可以设置的属性 x 和对应的事件 xChange 时，解释 [(x)] 语法就容易多了。 下面的 SizerComponent 符合这个模式。它有 size 属性和配套的 sizeChange 事件：
+当一个元素拥有可以设置的属性 x 和对应的事件 xChange 时，解释 [(x)] 语法就容易多了。 下面的 SizerComponent 符合这个模式。它有`size属性和配套的sizeChange事件`：
 
 `src/app/sizer.component.ts`
 
@@ -770,4 +770,145 @@ export class SizerComponent {
     this.sizeChange.emit(this.size);
   }
 }
+```
+size 的初始值是一个输入值，来自属性绑定。（译注：注意 size 前面的 @Input） 点击按钮，在最小/最大值范围限制内增加或者减少 size。 然后用调整后的 size 触发 sizeChange 事件。
+
+下面的例子中，AppComponent.fontSize 被双向绑定到 SizerComponent：
+`src/app/app.component.html (two-way-1)`
+```html
+<app-sizer [(size)]="fontSizePx"></app-sizer>
+<div [style.font-size.px]="fontSizePx">Resizable Text</div>
+```
+SizerComponent.size 初始值是 AppComponent.fontSizePx。点击按钮时，通过双向绑定更新 AppComponent.fontSizePx。被修改的AppComponent.fontSizePx通过样式绑定，改变文本的显示大小。
+
+双向绑定语法实际上是`属性绑定和事件绑定的语法糖`。Angular将SizerComponent的绑定分解成这样：
+
+`src/app/app.component.html (two-way-2)`
+```html
+<app-sizer [size]="fontSizePx" (sizeChange)="fontSizePx=$event"></app-sizer>
+```
+$event 变量包含了 SizerComponent.sizeChange 事件的荷载。 当用户点击按钮时，Angular 将 $event 赋值给 AppComponent.fontSizePx。
+
+显然，比起单独绑定属性和事件，双向数据绑定语法显得非常方便。
+
+如果能在像 &lt;input> 和 &lt;select> 这样的 HTML 元素上使用双向数据绑定就更好了。可惜，原生HTML元素不遵循x值和xChange事件的模式。
+
+幸运的是，Angular以NgModel指令为桥梁，允许在表单元素上使用双向数据绑定。
+
+## 内置指令 
+
+上一版本的 Angular 中包含了超过 70 个内置指令。 社区贡献了更多，这还没算为内部应用而创建的无数私有指令。
+
+在新版的 Angular 中不需要那么多指令。 使用更强大、更富有表现力的 Angular 绑定系统，其实可以达到同样的效果。 如果能用简单的绑定达到目的，为什么还要创建指令来处理点击事件呢？
+
+`src/app/app.component.html`
+```html
+<button (click)="onSave()">Save</button>
+```
+你仍然可以从简化复杂任务的指令中获益。 Angular 发布时仍然带有内置指令，只是没那么多了。 你仍会写自己的指令，只是没那么多了。
+
+下面来看一下那些最常用的内置指令。它们可分为属性型指令 或 结构型指令。
+
+## 内置属性型指令 
+属性型指令会监听和修改其它 HTML 元素或组件的行为、元素属性（Attribute）、DOM 属性（Property）。 它们通常会作为HTML属性的名称而应用在元素上。
+
+更多的细节参见属性型指令一章。 很多 Angular 模块，比如RouterModule和FormsModule都定义了自己的属性型指令。 本节将会介绍几个最常用的属性型指令：
+
+* NgClass - 添加或移除一组 CSS 类
+* NgStyle - 添加或移除一组 CSS 样式
+* NgModel - 双向绑定到 HTML 表单元素 
+
+### NgClass
+
+你经常用动态添加或删除 CSS 类的方式来控制元素如何显示。 通过绑定到 NgClass，可以同时添加或移除多个类。
+
+CSS 类绑定 是添加或删除单个类的最佳途径。
+
+`src/app/app.component.html`
+```html
+<!-- toggle the "special" class on/off with a property -->
+<div [class.special]="isSpecial">The class binding is special</div>
+```
+
+当想要同时添加或移除多个 CSS 类时，NgClass 指令可能是更好的选择。
+
+试试把 ngClass 绑定到一个 key:value 形式的控制对象。这个对象中的每个 key 都是一个 CSS 类名，如果它的 value 是 true，这个类就会被加上，否则就会被移除。
+
+组件方法 setCurrentClasses 可以把组件的属性 currentClasses 设置为一个对象，它将会根据三个其它组件的状态为 true 或 false 而添加或移除三个类。
+
+`src/app/app.component.ts`
+```html
+currentClasses: {};
+setCurrentClasses() {
+  // CSS classes: added/removed per current state of component properties
+  this.currentClasses =  {
+    'saveable': this.canSave,
+    'modified': !this.isUnchanged,
+    'special':  this.isSpecial
+  };
+}
+```
+
+把 NgClass 属性绑定到 currentClasses，根据它来设置此元素的 CSS 类：
+
+`src/app/app.component.html`
+```html
+<div [ngClass]="currentClasses">This div is initially saveable, unchanged, and special</div>
+
+```
+>你既可以在初始化时调用 setCurrentClassess()，也可以在所依赖的属性变化时调用。 
+
+### NgStyle 
+
+你可以根据组件的状态动态设置内联样式。 NgStyle 绑定可以同时设置多个内联样式。
+
+样式绑定是设置单一样式值的简单方式。
+
+`src/app/app.component.html`
+```html
+
+<div [style.font-size]="isSpecial ? 'x-large' : 'smaller'" >
+  This div is x-large or smaller.
+</div>
+```
+
+如果要同时设置多个内联样式，NgStyle 指令可能是更好的选择。
+
+NgStyle 需要绑定到一个 key:value 控制对象。 对象的每个 key 是样式名，它的 value 是能用于这个样式的任何值。
+
+来看看组件的 setCurrentStyles 方法，它会根据另外三个属性的状态把组件的 currentStyles 属性设置为一个定义了三个样式的对象：
+
+`src/app/app.component.ts`
+```html
+currentStyles: {};
+setCurrentStyles() {
+  // CSS styles: set per current state of component properties
+  this.currentStyles = {
+    'font-style':  this.canSave      ? 'italic' : 'normal',
+    'font-weight': !this.isUnchanged ? 'bold'   : 'normal',
+    'font-size':   this.isSpecial    ? '24px'   : '12px'
+  };
+}
+```
+
+把 NgStyle 属性绑定到 currentStyles，以据此设置此元素的样式：
+
+`src/app/app.component.html`
+```html
+<div [ngStyle]="currentStyles">
+  This div is initially italic, normal weight, and extra large (24px).
+</div>
+```
+
+>你既可以在初始化时调用 setCurrentStyles()，也可以在所依赖的属性变化时调用。 
+
+### NgModel - 使用[(ngModel)]双向绑定到表单元素 
+
+当开发数据输入表单时，你通常都要既显示数据属性又根据用户的更改去修改那个属性。
+
+使用 NgModel 指令进行双向数据绑定可以简化这种工作。例子如下：
+
+`src/app/app.component.html (NgModel-1)`
+```html
+<input [(ngModel)]="currentHero.name">
 ```

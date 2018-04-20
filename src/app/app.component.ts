@@ -8,6 +8,7 @@ import {Hero} from './Hero';
 })
 export class AppComponent {
   title = 'app';
+  fontSizePx = 1;
   public currentHero = new Hero(1, 'JJJ');
   deleteHero(hero: Hero) {
     console.log(hero.name);
