@@ -216,7 +216,7 @@ Angular 提供了各种各样的数据绑定，本章将逐一讨论。先从高
 但你的`直觉是错的`！日常的 HTML 思维模式在误导着你。实际上，`一旦开始数据绑定，就不再跟HTML attribute打交道了`。这里不是设置attribute，而是设置DOM元素、组件和指令的property。 
 
 
-###HTML attribute 与 DOM property 的对比
+### HTML attribute 与 DOM property 的对比
 
 >要想理解 Angular 绑定如何工作，重点是搞清 HTML attribute 和 DOM property 之间的区别。
 >
