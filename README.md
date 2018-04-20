@@ -686,7 +686,7 @@ template: `
 </div>`
 ```
 `src/app/hero-detail.component.ts (deleteRequest)`
-```html
+```javascript
 // This component makes a request but it can't actually delete a hero.
 deleteRequest = new EventEmitter<Hero>();
 
