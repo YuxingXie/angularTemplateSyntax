@@ -464,3 +464,31 @@ HeroDetail 组件的 hero 属性想要一个 Hero 对象，那就在属性绑定
 <p><span>"{{title}}" is the <i>interpolated</i> title.</span></p>
 <p>"<span [innerHTML]="title"></span>" is the <i>property bound</i> title.</p>
 ```
+在多数情况下，插值表达式是更方便的备选项。 实际上，在渲染视图之前，Angular 把这些插值表达式翻译成相应的属性绑定。
+
+当要渲染的数据类型是字符串时，没有技术上的理由证明哪种形式更好。 你倾向于可读性，所以倾向于插值表达式。 建议建立代码风格规则，选择一种形式， 这样，既遵循了规则，又能让手头的任务做起来更自然。
+
+但数据类型不是字符串时，就必须使用属性绑定了。
+#### 内容安全 
+假设下面的恶意内容
+
+`src/app/app.component.ts`
+```html
+evilTitle = 'Template <script>alert("evil never sleeps")</script>Syntax';
+```
+
+幸运的是，Angular 数据绑定对危险 HTML 有防备。在显示它们之前，它对内容先进行消毒。不管是插值表达式还是属性绑定，都不会允许带有script标签的 HTML泄漏到浏览器中。
+
+`src/app/app.component.html`
+```html
+<!--
+  Angular generates warnings for these two lines as it sanitizes them
+  WARNING: sanitizing HTML stripped some content (see http://g.co/ng/security#xss).
+ -->
+<p><span>"{{evilTitle}}" is the <i>interpolated</i> evil title.</span></p>
+<p>"<span [innerHTML]="evilTitle"></span>" is the <i>property bound</i> evil title.</p>
+```
+
+插值表达式处理script标签与属性绑定有所不同，但是二者都只渲染没有危害的内容。
+![](https://www.angular.cn/generated/images/guide/template-syntax/evil-title.png) 
+
