@@ -265,7 +265,7 @@ Angular 提供了各种各样的数据绑定，本章将逐一讨论。先从高
   <th>目标</th>
   <th>范例</th>
   </tr>
-  <tr>
+<tr>
     <td>属性(Property)</td>
     <td>元素的 property<br>
         组件的 property<br>
@@ -277,5 +277,18 @@ Angular 提供了各种各样的数据绑定，本章将逐一讨论。先从高
       <app-hero-detail [hero]="currentHero"></app-hero-detail>
       <div [ngClass]="{'special': isSpecial}"></div>
 </td>
-    </tr>
+</tr>
+<tr>
+    <td>事件（Event)</td>
+    <td>元素的事件<br>
+        组件的事件<br>
+        指令的事件</td>
+<td>
+      src/app/app.component.html<br>
+    
+      <button (click)="onSave()">Save</button>
+      <app-hero-detail (deleteRequest)="deleteHero()"></app-hero-detail>//有意思，接下来研究
+      <div (myClick)="clicked=$event" clickable>click me</div>
+</td>
+</tr>
 </table>
