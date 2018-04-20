@@ -686,7 +686,7 @@ template: `
 </div>`
 ```
 `src/app/hero-detail.component.ts (deleteRequest)`
-```typescript
+```Java
 // This component makes a request but it can't actually delete a hero.
 deleteRequest = new EventEmitter<Hero>();
 
@@ -698,4 +698,9 @@ delete() {
 
 组件定义了 deleteRequest 属性，它是 EventEmitter 实例。 当用户点击删除时，组件会调用 delete() 方法，让 EventEmitter 发出一个 Hero 对象。
 
-现在，假设有个宿主的父组件，它绑定了 HeroDetailComponent 的 deleteRequest 事件。
+现在，假设有个宿主的父组件，它绑定了 HeroDetailComponent 的 deleteRequest 事件。 
+
+`src/app/app.component.html (event-binding-to-component)`
+```html
+<app-hero-detail (deleteRequest)="deleteHero($event)" [hero]="currentHero"></app-hero-detail>
+```
