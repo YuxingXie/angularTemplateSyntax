@@ -588,3 +588,35 @@ CSS 类绑定绑定的语法与属性绑定类似。 但方括号中的部分不
 通过样式绑定，可以设置内联样式。
 
 样式绑定的语法与属性绑定类似。 但方括号中的部分不是元素的属性名，而由style前缀，一个点 (.)和 CSS 样式的属性名组成。 形如：[style.style-property]。 
+
+`src/app/app.component.html`
+```html
+<button [style.color]="isSpecial ? 'red': 'green'">Red</button>
+<button [style.background-color]="canSave ? 'cyan': 'grey'" >Save</button>
+```
+
+有些样式绑定中的样式带有单位。在这里，以根据条件用 “em” 和 “%” 来设置字体大小的单位。 
+
+`src/app/app.component.html`
+```html
+<button [style.font-size.em]="isSpecial ? 3 : 1" >Big</button>
+<button [style.font-size.%]="!isSpecial ? 150 : 50" >Small</button>
+```
+>虽然这是设置单一样式的好办法，但人们通常更喜欢使用 NgStyle 指令 来同时设置多个内联样式。
+
+>注意，样式属性命名方法可以用中线命名法，像上面的一样 也可以用驼峰式命名法，如 fontSize。
+
+## 事件绑定 ( (事件名) ) 
+前面遇到的绑定的数据流都是单向的：从组件到元素。 
+
+但用户不会只盯着屏幕看。他们会在输入框中输入文本。他们会从列表中选取条目。 他们会点击按钮。这类用户动作可能导致反向的数据流：从元素到组件。 
+
+知道用户动作的唯一方式是监听某些事件，如按键、鼠标移动、点击和触摸屏幕。 可以通过 Angular 事件绑定来声明对哪些用户动作感兴趣。
+
+事件绑定语法由等号左侧带圆括号的目标事件和右侧引号中的模板语句组成。 下面事件绑定监听按钮的点击事件。每当点击发生时，都会调用组件的 onSave() 方法。
+
+`src/app/app.component.html`
+```html
+<button (click)="onSave()">Save</button>
+```
+### 目标事件 
