@@ -1152,3 +1152,176 @@ NgSwitch 实际上包括三个相互协作的指令：NgSwitch、NgSwitchCase �
 </div>
 ```
 ![](https://github.com/YuxingXie/angularTemplateSyntax/raw/master/switch-anim.gif) 
+
+NgSwitch 是主控指令，要把它绑定到一个返回候选值的表达式。 本例子中的 emotion 是个字符串，但实际上这个候选值可以是任意类型。
+
+绑定到 [ngSwitch]。如果试图用 *ngSwitch 的形式使用它就会报错，这是因为 NgSwitch 是一个属性型指令，而不是结构型指令。 它要修改的是所在元素的行为，而不会直接接触 DOM 结构。
+
+绑定到 *ngSwitchCase 和 *ngSwitchDefault NgSwitchCase 和 NgSwitchDefault 指令都是结构型指令，因为它们会从 DOM 中添加或移除元素。
+
+* NgSwitchCase 会在它绑定到的值等于候选值时，把它所在的元素加入到 DOM 中。
+* NgSwitchDefault 会在没有任何一个 NgSwitchCase 被选中时把它所在的元素加入 DOM 中。
+
+这组指令在要添加或移除组件元素时会非常有用。 这个例子会在 hero-switch.components.ts 中定义的四个“感人英雄”组件之间选择。 每个组件都有一个输入属性hero，它绑定到父组件的 currentHero 上。
+
+这组指令在原生元素和Web Component上都可以正常工作。 比如，你可以把 <confused-hero> 分支改成这样：
+
+`src/app/app.component.html`
+```html
+<div *ngSwitchCase="'confused'">Are you as confused as {{currentHero.name}}?</div>
+
+```
+## 模板引用变量 ( #var ) 
+
+模板引用变量通常用来引用模板中的某个 DOM 元素，它还可以引用 Angular 组件或指令或Web Component。
+
+使用井号 (#) 来声明引用变量。 #phone 的意思就是声明一个名叫 phone 的变量来引用 &lt;input> 元素。
+
+src/app/app.component.html
+```html
+<input #phone placeholder="phone number">
+
+```
+
+你可以在模板中的任何地方引用模板引用变量。 比如声明在 &lt;input> 上的 phone 变量就是在模板另一侧的 &lt;button> 上使用的。
+
+`src/app/app.component.html`
+```html
+<input #phone placeholder="phone number">
+
+<!-- lots of other elements -->
+
+<!-- phone refers to the input element; pass its `value` to an event handler -->
+<button (click)="callPhone(phone.value)">Call</button>
+```
+### 模板引用变量怎么得到它的值？
+
+大多数情况下，Angular 会把模板引用变量的值设置为声明它的那个元素。 在上一个例子中，phone 引用的是表示电话号码的&lt;input> 框。 "拨号"按钮的点击事件处理器把这个 input 值传给了组件的 callPhone 方法。 不过，指令也可以修改这种行为，让这个值引用到别处，比如它自身。 NgForm 指令就是这么做的。
+
+下面是表单一章中表单范例的简化版。
+
+`src/app/hero-form.component.html`
+```html
+<form (ngSubmit)="onSubmit(heroForm)" #heroForm="ngForm">
+  <div class="form-group">
+    <label for="name">Name
+      <input class="form-control" name="name" required [(ngModel)]="hero.name">
+    </label>
+  </div>
+  <button type="submit" [disabled]="!heroForm.form.valid">Submit</button>
+</form>
+<div [hidden]="!heroForm.form.valid">
+  {{submitMessage}}
+</div>
+```
+#### 关于模板引用变量的注意事项 
+
+模板引用变量 (#phone) 和*ngFor部分看到过的模板输入变量 (let phone) 是不同的。 要了解详情，参见结构型指令一章。
+
+模板引用变量的作用范围是整个模板。 不要在同一个模板中多次定义同一个变量名，否则它在运行期间的值是无法确定的。
+
+你也可以用 ref- 前缀代替 #。 下面的例子中就用把 fax 变量声明成了 ref-fax 而不是 #fax。
+
+`src/app/app.component.html`
+```html
+<input ref-fax placeholder="fax number">
+<button (click)="callFax(fax.value)">Fax</button>
+```
+## 输入和输出属性 
+
+输入属性是一个带有 @Input 装饰器的可设置属性。当它通过属性绑定的形式被绑定时，值会“流入”这个属性。
+
+输出属性是一个带有 @Output 装饰器的可观察对象型的属性。 这个属性`几乎总是返回 Angular 的EventEmitter`。 当它通过事件绑定的形式被绑定时，值会“流出”这个属性。
+
+你只能通过它的输入和输出属性将其绑定到其它组件。
+
+> 记住，所有的组件都是指令。
+> 
+> 为简洁起见，以下讨论会涉及到组件，因为这个主题主要是组件作者所关心的问题。
+
+#### 讨论 
+
+在下面的例子中，iconUrl 和 onSave 是组件的成员，它们在 = 右侧引号语法中被引用了。
+
+`src/app/app.component.html`
+```html
+<img [src]="iconUrl"/>
+<button (click)="onSave()">Save</button>
+```
+
+iconUrl 和 onSave 是 AppComponent 类的成员。但它们并没有带 @Input() 或 @Output() 装饰器。 Angular 不在乎。
+
+你总是可以在组件自己的模板中绑定到组件的公共属性，而不用管它们是否输入（Input）属性或输出（Output）属性。
+
+这是因为组件类和模板是紧耦合的，它们是同一个东西的两个部分，合起来构成组件。 组件类及其模板之间的交互属于实现细节。
+
+### 绑定到其它组件 
+
+你也可以绑定到其它组件的属性。 这种绑定形式下，其它组件的属性位于等号（=）的左侧。
+
+下面的例子中，AppComponent 的模板把 AppComponent 类的成员绑定到了 HeroDetailComponent（选择器为 'app-hero-detail'） 的属性上。
+
+`src/app/app.component.html`
+```html
+<app-hero-detail [hero]="currentHero" (deleteRequest)="deleteHero($event)">
+</app-hero-detail>
+```
+Angular 的编译器可能会对这些绑定报错，就像这样： 
+
+    Uncaught Error: Template parse errors:
+    Can't bind to 'hero' since it isn't a known property of 'app-hero-detail' 
+
+(注：因为没有在HeroDetailComponent的属性上加上@Input()注解)
+    
+你自己知道 HeroDetailComponent 有两个属性 hero 和 detectRequest，但 Angular 编译器并不知道。
+
+Angular 编译器不会绑定到其它组件的属性上 —— 除非这些属性是输入或输出属性。
+
+这条规则是有充分理由的。
+
+组件绑定到它自己的属性当然没问题。 该组件的作者对这些绑定有完全的控制权。
+
+但是，其它组件不应该进行这种毫无限制的访问。 如果任何人都可以绑定到你的组件的任何属性上，那么这个组件就很难维护。 所以，外部组件应该只能绑定到组件的公共（允许绑定） API 上。
+
+Angular要求你显式声明那些API。它让你可以自己决定哪些属性是可以被外部组件绑定的。
+
+#### typeScript 的 public 是没用的 
+
+(注：javaer注意了)
+
+你不能用TypeScript的public和private访问控制符来标明组件的公共 API。
+
+>所有数据绑定属性必须是TypeScript的公共属性，Angular永远不会绑定到TypeScript中的私有属性。
+
+因此，Angular需要一些其它方式来标记出那些允许被外部组件绑定到的属性。这种其它方式，就是@Input()和@Output()装饰器。
+
+### 声明输入与输出属性 
+
+在本章的例子中，绑定到 HeroDetailComponent 不会失败，这是因为这些要进行数据绑定的属性都带有 @Input() 和 @Output() 装饰器。
+
+`src/app/hero-detail.component.ts`
+```html
+@Input()  hero: Hero;
+@Output() deleteRequest = new EventEmitter<Hero>();
+```
+另外，还可以在指令元数据的 inputs 或 outputs 数组中标记出这些成员。比如这个例子：
+
+`src/app/hero-detail.component.ts`
+```html
+@Component({
+  inputs: ['hero'],
+  outputs: ['deleteRequest'],
+})
+```
+### 输入还是输出？ 
+
+输入属性通常接收数据值。 输出属性暴露事件生产者，如 EventEmitter 对象。
+
+输入和输出这两个词是从目标指令的角度来说的。
+
+![](https://github.com/YuxingXie/angularTemplateSyntax/raw/master/input-output.png) 
+
+从 HeroDetailComponent 角度来看，HeroDetailComponent.hero 是个输入属性， 因为数据流从模板绑定表达式流入那个属性。
+
+从 HeroDetailComponent 角度来看，HeroDetailComponent.deleteRequest 是个输出属性， 因为事件从那个属性流出，流向模板绑定语句中的处理器。
+
