@@ -1325,3 +1325,198 @@ Angular要求你显式声明那些API。它让你可以自己决定哪些属性�
 
 从 HeroDetailComponent 角度来看，HeroDetailComponent.deleteRequest 是个输出属性， 因为事件从那个属性流出，流向模板绑定语句中的处理器。
 
+### 给输入/输出属性起别名 
+
+有时需要让输入/输出属性的公共名字不同于内部名字。
+
+这是使用 attribute 指令时的常见情况。 指令的使用者期望绑定到指令名。例如，在 <div> 上用 myClick 选择器应用指令时， 希望绑定的事件属性也叫 myClick。
+
+`src/app/app.component.html`
+```html
+<div (myClick)="clickMessage=$event" clickable>click with myClick</div>
+```
+然而，在指令类中，直接用指令名作为自己的属性名通常都不是好的选择。 指令名很少能描述这个属性是干嘛的。 myClick 这个指令名对于用来发出 click 消息的属性就算不上一个好名字。
+
+幸运的是，可以使用约定俗成的公共名字，同时在内部使用不同的名字。 在上面例子中，实际上是把 myClick 这个别名指向了指令自己的 clicks 属性。
+
+把别名传进@Input/@Output 装饰器，就可以为属性指定别名，就像这样：
+
+`src/app/click.directive.ts`
+```html
+@Output('myClick') clicks = new EventEmitter<string>(); //  @Output(alias) propertyName = ...
+```
+也可在 inputs 和 outputs 数组中为属性指定别名。 可以写一个冒号 (:) 分隔的字符串，左侧是指令中的属性名，右侧则是公共别名。
+
+`src/app/click.directive.ts`
+```typescript
+@Directive({
+  outputs: ['clicks:myClick']  // propertyName:alias
+})
+```
+## 模板表达式操作符 
+模板表达式语言使用了 JavaScript 语法的子集，并补充了几个用于特定场景的特殊操作符。 下面介绍其中的两个：管道和安全导航操作符。
+
+### 管道操作符 ( | ) 
+
+在绑定之前，表达式的结果可能需要一些转换。例如，可能希望把数字显示成金额、强制文本变成大写，或者过滤列表以及进行排序。
+
+Angular 管道对像这样的小型转换来说是个明智的选择。 管道是一个简单的函数，它接受一个输入值，并返回转换结果。 它们很容易用于模板表达式中，只要使用管道操作符 (|) 就行了。
+
+`src/app/app.component.html`
+```html
+<div>Title through uppercase pipe: {{title | uppercase}}</div>
+
+```
+管道操作符会把它左侧的表达式结果传给它右侧的管道函数。
+
+还可以通过多个管道串联表达式：
+
+`src/app/app.component.html`
+```html
+<!-- Pipe chaining: convert title to uppercase, then to lowercase -->
+<div>
+  Title through a pipe chain:
+  {{title | uppercase | lowercase}}
+</div>
+```
+
+还能对它们使用参数：
+
+`src/app/app.component.html`
+```html
+<!-- pipe with configuration argument => "February 25, 1970" -->
+<div>Birthdate: {{currentHero?.birthdate | date:'longDate'}}</div>
+```
+
+json 管道对调试绑定特别有用：
+
+`src/app/app.component.html (pipes-json)`
+```html
+<div>{{currentHero | json}}</div>
+```
+
+它生成的输出是这样的：
+
+```json
+{ "id": 0, "name": "Hercules", "emotion": "happy",
+  "birthdate": "1970-02-25T08:00:00.000Z",
+  "url": "http://www.imdb.com/title/tt0065832/",
+  "rate": 325 }
+
+```
+### 安全导航操作符 ( ?. ) 和空属性路径 
+
+Angular 的安全导航操作符 (?.) 是一种流畅而便利的方式，用来保护出现在属性路径中 null 和 undefined 值。 下例中，当 currentHero 为空时，保护视图渲染器，让它免于失败。
+
+`src/app/app.component.html`
+```html
+The current hero's name is {{currentHero?.name}}
+
+```
+如果下列数据绑定中 title 属性为空，会发生什么？
+
+`src/app/app.component.html`
+```html
+The title is {{title}}
+
+```
+这个视图仍然被渲染出来，但是显示的值是空；只能看到 “The title is”，它后面却没有任何东西。 这是合理的行为。至少应用没有崩溃。
+
+假设模板表达式涉及属性路径，在下例中，显示一个空 (null) 英雄的 firstName。
+
+```html
+The null hero's name is {{nullHero.name}}
+```
+
+JavaScript 抛出了空引用错误，Angular 也是如此：
+
+
+>TypeError: Cannot read property 'name' of null in [null].
+
+晕，整个视图都不见了。
+
+如果确信 hero 属性永远不可能为空，可以声称这是合理的行为。 如果它必须不能为空，但它仍然是空值，实际上是制造了一个编程错误，它应该被捕获和修复。 这种情况应该抛出异常。
+
+另一方面，属性路径中的空值可能会时常发生，特别是数据目前为空但最终会出现。
+
+当等待数据的时候，视图渲染器不应该抱怨，而应该把这个空属性路径显示为空白，就像上面 title 属性那样。
+
+不幸的是，当 currentHero 为空的时候，应用崩溃了。
+
+可以通过用NgIf代码环绕它来解决这个问题。
+
+`src/app/app.component.html`
+```html
+<!--No hero, div not displayed, no error -->
+<div *ngIf="nullHero">The null hero's name is {{nullHero.name}}</div>
+```
+或者可以尝试通过 && 来把属性路径的各部分串起来，让它在遇到第一个空值的时候，就返回空。
+
+`src/app/app.component.html`
+```html
+The null hero's name is {{nullHero && nullHero.name}}
+
+```
+这些方法都有价值，但是会显得笨重，特别是当这个属性路径非常长的时候。 想象一下在一个很长的属性路径（如 a.b.c.d）中对空值提供保护。
+
+Angular 安全导航操作符 (?.) 是在属性路径中保护空值的更加流畅、便利的方式。 表达式会在它遇到第一个空值的时候跳出。 显示是空的，但应用正常工作，而没有发生错误。
+
+`src/app/app.component.html`
+```html
+<!-- No hero, no problem! -->
+The null hero's name is {{nullHero?.name}}
+```
+在像 `a?.b?.c?.d` 这样的`长属性路径中，它工作得很完美`。
+
+### 非空断言操作符（!）
+
+在 TypeScript 2.0 中，你可以使用 --strictNullChecks 标志强制开启严格空值检查。TypeScript 就会确保不存在意料之外的 null 或 undefined。
+
+在这种模式下，有类型的变量默认是不允许 null 或 undefined 值的，如果有未赋值的变量，或者试图把 null 或 undefined 赋值给不允许为空的变量，类型检查器就会抛出一个错误。
+
+如果类型检查器在运行期间无法确定一个变量是 null 或 undefined，那么它也会抛出一个错误。 你自己可能知道它不会为空，但类型检查器不知道。 所以你要告诉类型检查器，它不会为空，这时就要用到非空断言操作符。
+
+Angular 模板中的**非空断言操作符（!）也是同样的用途。
+
+例如，在用*ngIf来检查过 hero 是已定义的之后，就可以断言 hero 属性一定是已定义的。
+
+`src/app/app.component.html`
+```html
+<!--No hero, no text -->
+<div *ngIf="hero">
+  The hero's name is {{hero!.name}}
+</div>
+```
+在 Angular 编译器把你的模板转换成 TypeScript 代码时，这个操作符会防止 TypeScript 报告 "hero.name 可能为 null 或 undefined"的错误。
+
+与安全导航操作符不同的是，非空断言操作符不会防止出现 null 或 undefined。 它只是告诉 TypeScript 的类型检查器对特定的属性表达式，不做 "严格空值检测"。
+
+如果你打开了严格控制检测，那就要用到这个模板操作符，而其它情况下则是可选的。
+
+## 类型转换函数 $any （$any( <表达式> )）
+ 
+有时候，绑定表达式可能会报类型错误，并且它不能或很难指定类型。要消除这种报错，你可以使用 $any 转换函数来把表达式转换成 any 类型。
+
+`src/app/app.component.html`
+```html
+<!-- Accessing an undeclared member -->
+<div>
+  The hero's marker is {{$any(hero).marker}}
+</div>
+```
+在这个例子中，当 Angular 编译器把模板转换成 TypeScript 代码时，$any 表达式可以防止 TypeScript 编译器报错说 marker 不是 Hero 接口的成员。
+
+$any 转换函数可以和 this 联合使用，以便访问组件中未声明过的成员。
+
+`src/app/app.component.html`
+```html
+<!-- Accessing an undeclared member -->
+<div>
+  Undeclared members is {{$any(this).member}}
+</div>
+```
+$any 转换函数可以在`绑定表达式中任何可以进行方法调用的地方`使用。
+
+## 小结
+
+你完成了模板语法的概述。现在，该把如何写组件和指令的知识投入到实际工作当中了。
