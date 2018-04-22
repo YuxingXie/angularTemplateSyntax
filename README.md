@@ -58,10 +58,10 @@ JavaScript 中那些具有或可能引发副作用的表达式是被禁止的，
 
 超出上面指南外的情况应该只出现在那些你确信自己已经彻底理解的特定场景中。
 ### 没有可见的副作用
-模板表达式除了目标属性的值以外，不应该改变应用的任何状态（注：不可赋值，不可自增自减基本保证了其无副作用）。<br>
+模板表达式除了目标属性的值以外，不应该改变应用的任何状态<span style="color: blue">(注：不可赋值，不可自增自减基本保证了其无副作用）</span>。<br>
 
 这条规则是 Angular “单向数据流”策略的基础。 永远不用担心读取组件值可能改变另外的显示值。在一次单独的渲染过程中，视图应该总是稳定的。<br>
-(注：与react理念一致)
+<span style="color: blue">(注：与react理念一致)</span>
 ### 执行迅速
 Angular 会在每个变更检测周期后执行模板表达式。 它们可能在每一次按键或鼠标移动后被调用。
 
@@ -86,16 +86,16 @@ Angular 会在每个变更检测周期后执行模板表达式。 它们可能�
 
 响应事件是Angular中“`单向数据流`”的另一面。在一次事件循环中，可以随意改变任何地方的任何东西。
 
-和模板表达式一样，模板语句使用的语言也像JavaScript。模板语句解析器和模板表达式解析器有所不同，特别之处在于它支持基本赋值(=)和表达式链(;和,)(注：相当于代码块)。 
+和模板表达式一样，模板语句使用的语言也像JavaScript。模板语句解析器和模板表达式解析器有所不同，特别之处在于它支持基本赋值(=)和表达式链(;和,)<span style="color: blue">(注：相当于代码块)</span>。 
 
 然而，某些 JavaScript 语法仍然是不允许的： 
 * new 运算符
 * 自增和自减运算符：++ 和 --
-* 操作并赋值，例如 += 和 -=（注：++和--特例）
+* 操作并赋值，例如 += 和 -=<span style="color: blue">(注：++和--特例）</span>。 
 * 位操作符 | 和 &
-* 模板表达式运算符（注：即管道操作符、安全导航操作符和非空断言操作符） 
+* 模板表达式运算符<span style="color: blue">(注：即管道操作符、安全导航操作符和非空断言操作符） </span>。 
 
-（注：既然接受用户输入那为什么不可以自增自减new等操作？大概是angular认为这些操作应该放在组件而非模板中，模板仅仅充当视图而组件充当控制器）
+<span style="color: blue">(注：既然接受用户输入那为什么不可以自增自减new等操作？大概是angular认为这些操作应该放在组件而非模板中，模板仅仅充当视图而组件充当控制器）</span>。 
 ### 语句上下文
 和表达式中一样，语句只能引用语句上下文中 —— 通常是`正在绑定事件的那个组件实例`。 
 
@@ -105,7 +105,7 @@ Angular 会在每个变更检测周期后执行模板表达式。 它们可能�
 ```html
 <button (click)="deleteHero()">Delete hero</button>
 ```
-语句上下文可以`引用`(注：所谓引用一般说来是充当方法参数)模板自身上下文中的属性（注：$event应该是一个内置变量，模板输入变量和模板引用变量类似于模板内声明的变量）。在下面的例子中，就把模板的$event对象(稍后研究)、模板输入变量(let hero)和模板引用变量(#heroForm)传给了组件中的一个事件处理器方法。 
+语句上下文可以`引用`<span style="color: blue">(注：所谓引用一般说来是充当方法参数)</span>模板自身上下文中的属性<span style="color: blue">(注：$event应该是一个内置变量，模板输入变量和模板引用变量类似于模板内声明的变量）</span>。在下面的例子中，就把模板的$event对象(稍后研究)、模板输入变量(let hero)和模板引用变量(#heroForm)传给了组件中的一个事件处理器方法。 
 
 `src/app/app.component.html`
 ```html
@@ -124,7 +124,7 @@ Angular 会在每个变更检测周期后执行模板表达式。 它们可能�
 ## 绑定语法：概览
 数据绑定是一种机制，用来协调用户所见和应用数据。虽然你能往HTML推送值或者从HTML拉取值，但如果把这些琐事交给数据绑定框架处理，应用会更容易编写、阅读和维护。只要简单地在绑定源和目标HTML元素之间声明绑定，框架就会完成这项工作。 
 
-(注：理解上面这段话是很有意义的，绑定到底干什么用的，绑定的目标和数据源具体表现是什么，概念都应该在研究中逐渐清晰) 
+<span style="color: blue">(注：理解上面这段话是很有意义的，绑定到底干什么用的，绑定的目标和数据源具体表现是什么，概念都应该在研究中逐渐清晰) </span>
 
 Angular 提供了各种各样的数据绑定，本章将逐一讨论。先从高层视角来看看Angular数据绑定及其语法。
 绑定的类型可以根据数据流的方向分成三类： 从数据源到视图、从视图到数据源以及双向的从视图到数据源再到视图。
@@ -329,7 +329,7 @@ Angular 提供了各种各样的数据绑定，本章将逐一讨论。先从高
 </tr>
 </table>
 
-(注：class,attr,style这3个绑定形式上有些类似，而事件则需要深入研究) 
+<span style="color: blue">(注：class,attr,style这3个绑定形式上有些类似，而事件则需要深入研究) </span>
 
 放开眼界，来看看每种绑定类型的具体情况。 
 
@@ -339,7 +339,7 @@ Angular 提供了各种各样的数据绑定，本章将逐一讨论。先从高
 
 最常用的属性绑定是把元素属性设置为组件属性的值。 下面这个例子中，image 元素的 src 属性会被绑定到组件的 heroImageUrl 属性上：
 
-(注：从面向对象的概念看，组件是一个类，组件的属性值就是类的属性值) 
+<span style="color: blue">(注：从面向对象的概念看，组件是一个类，组件的属性值就是类的属性值) </span>
 
 `src/app/app.component.html`
 ```html
@@ -356,11 +356,11 @@ Angular 提供了各种各样的数据绑定，本章将逐一讨论。先从高
 
 ```html
 <div [ngClass]="classes">[ngClass] binding to the classes property</div>
-(注：[ngClass]绑定到组件的classes属性)
+<span style="color: blue">(注：[ngClass]绑定到组件的classes属性)</span>
 ```
 还有另一个例子是设置自定义组件的模型属性（这是父子组件之间通讯的重要途径）： 
 
-(注：仅从表现形式上看，自定义组件和普通html元素的属性绑定没什么不一样)
+<span style="color: blue">(注：仅从表现形式上看，自定义组件和普通html元素的属性绑定没什么不一样)</span>
 
 `src/app/app.component.html`
 ```html
@@ -379,7 +379,7 @@ Angular 提供了各种各样的数据绑定，本章将逐一讨论。先从高
 >
 >如果必须读取目标元素上的属性或调用它的某个方法，得用另一种技术。 参见 API 参考手册中的 ViewChild 和 ContentChild。 
 
-(注：重点：1单向,只读，2不能调用方法，3事件监听)
+<span style="color: blue">(注：重点：1单向,只读，2不能调用方法，3事件监听)</span>
 
 ### 绑定目标 
 包裹在方括号中的元素属性名标记着目标属性。下列代码中的目标属性是image元素的src属性。
@@ -408,7 +408,7 @@ Angular 提供了各种各样的数据绑定，本章将逐一讨论。先从高
 
 >严格来说，Angular 正在匹配指令的输入属性的名字。 这个名字是指令的 inputs 数组中所列的名字，或者是带有 @Input() 装饰器的属性。 这些输入属性被映射为指令自己的属性。 
 
-(注：所以，ngClass是某个指令的属性名，严格说叫输入属性名)
+<span style="color: blue">(注：所以，ngClass是某个指令的属性名，严格说叫输入属性名)</span>
 
 如果名字没有匹配上已知指令或元素的属性，Angular 就会报告“未知指令”的错误。
 
@@ -420,13 +420,13 @@ Angular 提供了各种各样的数据绑定，本章将逐一讨论。先从高
 
 表达式中可以调用像getFoo()这样的方法。只有你知道getFoo()干了什么。如果getFoo()改变了某个东西，恰好又绑定到个这个东西，你就可能把自己坑了。Angular可能显示也可能不显示变化后的值。Angular还可能检测到变化，并抛出警告型错误。一般建议是，只绑定数据属性和那些只返回值而不做其它事情的方法。
 
-(注：`单向输入`小节所讲的`不能使用属性绑定来调用目标元素上的方法`和这里所讲的`表达式中调用方法`是不一样的)
+<span style="color: blue">(注：`单向输入`小节所讲的`不能使用属性绑定来调用目标元素上的方法`和这里所讲的`表达式中调用方法`是不一样的)</span>
 
 ### 返回恰当的类型 
 
 模板表达式应该返回目标属性所需类型的值。如果目标属性想要个字符串，就返回字符串。如果目标属性想要个数字，就返回数字。如果目标属性想要个对象，就返回对象。 
 
-(注：对于html属性，一般只会要求字符串或数字，而对于自定义组件属性，则有可能是一个对象)  
+<span style="color: blue">(注：对于html属性，一般只会要求字符串或数字，而对于自定义组件属性，则有可能是一个对象)  </span>
 
 HeroDetail 组件的 hero 属性想要一个 Hero 对象，那就在属性绑定中精确地给它一个 Hero 对象：
 
@@ -448,7 +448,7 @@ HeroDetail 组件的 hero 属性想要一个 Hero 对象，那就在属性绑定
 ```html
 <app-hero-detail prefix="You are my" [hero]="currentHero"></app-hero-detail>
 ```
-(注：就像使用普通html属性一样) 
+<span style="color: blue">(注：就像使用普通html属性一样) </span>
 
 作为对比，[hero] 绑定是组件的 currentHero 属性的活绑定，它会一直随着更新。
 
@@ -620,7 +620,7 @@ CSS 类绑定绑定的语法与属性绑定类似。 但方括号中的部分不
 <button (click)="onSave()">Save</button>
 ```
 ### 目标事件 
-(注：开始事件绑定研究之前，先回顾一下属性绑定做的是什么？它用数据渲染了组件，是单向数据流中的流出，而事件绑定则是流入。属性绑定使用模板表达式，事件绑定使用模板语句。) 
+<span style="color: blue">(注：开始事件绑定研究之前，先回顾一下属性绑定做的是什么？它用数据渲染了组件，是单向数据流中的流出，而事件绑定则是流入。属性绑定使用模板表达式，事件绑定使用模板语句。) </span>
 
 圆括号中的名称 —— 比如 (click) —— 标记出目标事件。在下面例子中，目标是按钮的 click 事件。
 
@@ -668,9 +668,9 @@ CSS 类绑定绑定的语法与属性绑定类似。 但方括号中的部分不
 如果事件属于指令（回想一下，组件是指令的一种），那么 $event 具体是什么由指令决定。
 
 ### 使用 EventEmitter 实现自定义事件 
-通常，指令使用 Angular EventEmitter 来触发自定义事件。指令创建一个 EventEmitter 实例(注：泛型实例)，并且把它作为属性暴露出来。 指令调用 EventEmitter.emit(payload) 来触发事件，可以传入任何东西作为消息载荷。 父指令通过绑定到这个属性来监听事件，并通过 $event 对象来访问载荷。
+通常，指令使用 Angular EventEmitter 来触发自定义事件。指令创建一个 EventEmitter 实例<span style="color: blue">(注：泛型实例)</span>，并且把它作为属性暴露出来。 指令调用 EventEmitter.emit(payload) 来触发事件，可以传入任何东西作为消息载荷。 父指令通过绑定到这个属性来监听事件，并通过 $event 对象来访问载荷。
 
-假设 HeroDetailComponent 用于显示英雄的信息，并响应用户的动作。 虽然 HeroDetailComponent 包含删除按钮，但它自己并不知道该如何删除这个英雄(注：因为删除的方法定义在父组件中)。 最好的做法是触发事件来报告“删除用户”的请求。
+假设 HeroDetailComponent 用于显示英雄的信息，并响应用户的动作。 虽然 HeroDetailComponent 包含删除按钮，但它自己并不知道该如何删除这个英雄<span style="color: blue">(注：因为删除的方法定义在父组件中)</span>。 最好的做法是触发事件来报告“删除用户”的请求。
 
 下面的代码节选自 HeroDetailComponent：
 
@@ -694,7 +694,7 @@ delete() {
   this.deleteRequest.emit(this.hero);
 }
 ```
-(注：delete方法看起来是要从英雄列表数组中删除该项，然而HeroDetailComponent并不持有该数组，所以需要它的父组件去真正执行从数组删除数据项这件事，类似于给父组件发个通知吧)
+<span style="color: blue">(注：delete方法看起来是要从英雄列表数组中删除该项，然而HeroDetailComponent并不持有该数组，所以需要它的父组件去真正执行从数组删除数据项这件事，类似于给父组件发个通知吧)</span>
 
 组件定义了 deleteRequest 属性，它是 EventEmitter 实例。 当用户点击删除时，组件会调用 delete() 方法，让 EventEmitter 发出一个 Hero 对象。
 
@@ -706,7 +706,7 @@ delete() {
 ```
 当deleteRequest事件触发时，Angular调用父组件的deleteHero方法，在$event变量中传入要删除的英雄（来自HeroDetail）。
 
->(注：app-hero-detail组件绑定了自定义的deleteRequest属性，初略的理解是，这个属性表明点击该组件会传播一个Hero对象到父组件，
+><span style="color: blue">(注：app-hero-detail组件绑定了自定义的deleteRequest属性，初略的理解是，这个属性表明点击该组件会传播一个Hero对象到父组件，</span>
 父组件的deleteHero方法通过参数$event接受这个Hero对象，具体如何取得这个值，通过试验，代码如下：)
 
 `app.component.ts` 
@@ -993,7 +993,7 @@ ngModel 指令通过自己的输入属性 ngModel 和输出属性 ngModelChange 
 
 * 为什么要给结构型指令的名字加上(*)前缀？
 * 当没有合适的宿主元素放置指令时，可用 &lt;ng-container> 对元素进行分组。
-* 如何写自己的结构型指令(注：我要写一个责任链模式数据展示指令)。
+* 如何写自己的结构型指令<span style="color: blue">(注：我要写一个责任链模式数据展示指令)</span>。
 * 你只能往一个元素上应用一个结构型指令。
 
 本节是对常见结构型指令的简介：
@@ -1072,7 +1072,7 @@ NgFor 是一个重复器指令 —— 自定义数据显示的一种方式。 �
 ```
 >不要忘了 ngFor 前面的星号 (*)。
 
-赋值给 *ngFor 的文本是用于指导重复器如何工作的指令(注：instruction非directive)。
+赋值给 *ngFor 的文本是用于指导重复器如何工作的指令<span style="color: blue">(注：instruction非directive)</span>。
 #### NgFor 微语法 
 赋值给 *ngFor 的字符串不是模板表达式。 它是一个微语法 —— 由 Angular 自己解释的小型语言。在这个例子中，字符串 "let hero of heroes" 的含义是：
 
@@ -1098,7 +1098,7 @@ NgFor 指令上下文中的 index 属性返回一个从零开始的索引，表�
 
 下面这个例子把 index 捕获到了 i 变量中，并且把它显示在英雄名字的前面。
 
-(注：有时候需要索引的奇偶数做些样式或逻辑判断，angularjs似乎一直没解决的问题，在angular中解决了)
+<span style="color: blue">(注：有时候需要索引的奇偶数做些样式或逻辑判断，angularjs似乎一直没解决的问题，在angular中解决了)</span>
 
 `src/app/app.component.html`
 ```html
@@ -1115,7 +1115,7 @@ ngFor 指令有时候会性能较差，特别是在大型列表中。 对一个�
 
 如果给它指定一个 trackBy，Angular 就可以避免这种折腾。 往组件中添加一个方法，它会返回 NgFor应该追踪的值。 在这里，这个值就是英雄的 id。
 
-(注：说句后端java程序员才懂的行话，trackBy类似于jpa的持久化上下文)
+<span style="color: blue">(注：说句后端java程序员才懂的行话，trackBy类似于jpa的持久化上下文)</span>
 
 `src/app/app.component.ts`
 ```html
@@ -1129,7 +1129,7 @@ trackByHeroes(index: number, hero: Hero): number { return hero.id; }
   ({{hero.id}}) {{hero.name}}
 </div>
 ```
-(注：个人认为这个特性是提高前端性能的重要手段)
+<span style="color: blue">(注：个人认为这个特性是提高前端性能的重要手段)</span>
 
 这里展示了 trackBy 的效果。 "Reset heroes"会创建一个具有相同 hero.id 的新英雄。 "Change ids"则会创建一个具有新 hero.id 的新英雄。
 
@@ -1271,7 +1271,7 @@ Angular 的编译器可能会对这些绑定报错，就像这样：
     Uncaught Error: Template parse errors:
     Can't bind to 'hero' since it isn't a known property of 'app-hero-detail' 
 
-(注：因为没有在HeroDetailComponent的属性上加上@Input()注解)
+<span style="color: blue">(注：因为没有在HeroDetailComponent的属性上加上@Input()注解)</span>
     
 你自己知道 HeroDetailComponent 有两个属性 hero 和 detectRequest，但 Angular 编译器并不知道。
 
@@ -1287,7 +1287,7 @@ Angular要求你显式声明那些API。它让你可以自己决定哪些属性�
 
 #### typeScript 的 public 是没用的 
 
-(注：javaer注意了)
+<span style="color: blue">(注：javaer注意了)</span>
 
 你不能用TypeScript的public和private访问控制符来标明组件的公共 API。
 
